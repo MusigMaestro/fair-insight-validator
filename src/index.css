@@ -9,40 +9,40 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Enterprise Color Palette - Lam Research Theme */
-    --background: 248 250 252;
-    --foreground: 224 231 255;
+    --background: 220 14% 96%;
+    --foreground: 203 23% 30%;
 
-    --card: 255 255 255;
-    --card-foreground: 51 65 85;
+    --card: 0 0% 100%;
+    --card-foreground: 203 23% 30%;
 
-    --popover: 255 255 255;
-    --popover-foreground: 51 65 85;
+    --popover: 0 0% 100%;
+    --popover-foreground: 203 23% 30%;
 
     /* Corporate Blues - Professional & Trustworthy */
     --primary: 215 77% 45%;
-    --primary-foreground: 255 255 255;
+    --primary-foreground: 0 0% 100%;
     --primary-light: 215 77% 55%;
     --primary-dark: 215 77% 35%;
 
     /* Secondary - Subtle Gray for Supporting Elements */
     --secondary: 215 25% 95%;
-    --secondary-foreground: 51 65 85;
+    --secondary-foreground: 203 23% 30%;
 
     /* Muted - Background Variations */
     --muted: 215 25% 97%;
-    --muted-foreground: 100 116 139;
+    --muted-foreground: 215 13% 65%;
 
     /* Accent - Success Green for Passed Documents */
     --accent: 142 76% 45%;
-    --accent-foreground: 255 255 255;
+    --accent-foreground: 0 0% 100%;
 
     /* Status Colors for Document Validation */
     --success: 142 76% 45%;
-    --success-foreground: 255 255 255;
+    --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
-    --warning-foreground: 255 255 255;
+    --warning-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 255 255 255;
+    --destructive-foreground: 0 0% 100%;
 
     /* UI Elements */
     --border: 215 25% 90%;
@@ -52,7 +52,7 @@ All colors MUST be HSL.
     /* Enterprise Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(215 77% 45%), hsl(215 77% 55%));
     --gradient-hero: linear-gradient(135deg, hsl(215 77% 45%), hsl(215 77% 35%));
-    --gradient-card: linear-gradient(145deg, hsl(255 255 255), hsl(215 25% 98%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(215 25% 98%));
     
     /* Shadows for Depth */
     --shadow-soft: 0 1px 3px 0 hsl(215 25% 50% / 0.1), 0 1px 2px 0 hsl(215 25% 50% / 0.06);
@@ -61,21 +61,14 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 203 23% 30%;
+    --sidebar-primary: 215 77% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 25% 95%;
+    --sidebar-accent-foreground: 203 23% 30%;
+    --sidebar-border: 215 25% 90%;
+    --sidebar-ring: 215 77% 45%;
   }
 
   .dark {
