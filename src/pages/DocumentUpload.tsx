@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Upload, FileText, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { useDocument } from "@/context/DocumentContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -18,6 +19,7 @@ interface UploadedFile {
 const DocumentUpload = () => {
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const { setDocumentInfo } = useDocument();
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -53,6 +55,15 @@ const DocumentUpload = () => {
     }));
 
     setUploadedFiles(prev => [...prev, ...newFiles]);
+    
+    // Save the first file to document context for analysis
+    if (files.length > 0) {
+      setDocumentInfo({
+        name: files[0].name,
+        file: files[0],
+        uploadDate: new Date().toISOString(),
+      });
+    }
     
     // Simulate upload and validation process
     newFiles.forEach(file => {

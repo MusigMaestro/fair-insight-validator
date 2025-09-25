@@ -26,7 +26,7 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="bg-card border-r border-border h-screen w-64 flex flex-col shadow-medium">
+    <nav className="bg-card border-r border-border h-screen w-64 flex flex-col shadow-medium fixed left-0 top-0 z-50">
       {/* Header */}
       <div className="p-6 border-b border-border">
         <div className="flex items-center gap-3">

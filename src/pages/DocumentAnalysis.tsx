@@ -10,6 +10,9 @@ import {
   Ruler,
   Zap
 } from "lucide-react";
+import { useDocument } from "@/context/DocumentContext";
+import DocumentViewer from "@/components/DocumentViewer";
+import * as XLSX from 'xlsx';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,12 +30,14 @@ interface ValidationResult {
 
 const DocumentAnalysis = () => {
   const [selectedDocument] = useState("FAIR-2024-0088");
+  const [documentViewerOpen, setDocumentViewerOpen] = useState(false);
+  const { documentInfo } = useDocument();
 
-  const documentInfo = {
+  const currentDocumentInfo = {
     id: "FAIR-2024-0088",
-    name: "Ceramic_Heater_FAIR_Rev_C.pdf",
+    name: documentInfo?.name || "Ceramic_Heater_FAIR_Rev_C.pdf",
     commodity: "Ceramic Heater Assembly",
-    uploadDate: "2024-01-15 14:32:00",
+    uploadDate: documentInfo?.uploadDate || "2024-01-15 14:32:00",
     processedDate: "2024-01-15 14:34:23",
     overallStatus: "failed",
     confidence: 87,
@@ -135,6 +140,52 @@ const DocumentAnalysis = () => {
   const failedCount = validationResults.filter(r => r.status === "failed").length;
   const warningCount = validationResults.filter(r => r.status === "warning").length;
 
+  const exportToExcel = () => {
+    // Create worksheet with validation results
+    const wsData = [
+      ['FAIR Document Analysis Report'],
+      [''],
+      ['Document Information'],
+      ['Document ID', currentDocumentInfo.id],
+      ['Document Name', currentDocumentInfo.name],
+      ['Commodity', currentDocumentInfo.commodity],
+      ['Upload Date', currentDocumentInfo.uploadDate],
+      ['Overall Status', currentDocumentInfo.overallStatus],
+      ['Confidence Score', `${currentDocumentInfo.confidence}%`],
+      [''],
+      ['Validation Results'],
+      ['Field', 'Expected Value', 'Actual Value', 'Status', 'Source'],
+      ...validationResults.map(result => [
+        result.field,
+        result.expected,
+        result.actual,
+        result.status,
+        result.source
+      ]),
+      [''],
+      ['Summary'],
+      ['Tests Passed', passedCount],
+      ['Warnings', warningCount],
+      ['Failed Tests', failedCount],
+      [''],
+      ['Image Analysis'],
+      ['Type', 'Status', 'Confidence', 'Description'],
+      ...imageAnalysis.map(analysis => [
+        analysis.type,
+        analysis.status,
+        `${analysis.confidence}%`,
+        analysis.description
+      ])
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Analysis Report');
+    
+    // Save the file
+    XLSX.writeFile(wb, `FAIR_Analysis_${currentDocumentInfo.name.replace('.pdf', '')}_${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -142,15 +193,15 @@ const DocumentAnalysis = () => {
         <div>
           <h1 className="text-3xl font-bold text-card-foreground">Document Analysis</h1>
           <p className="text-muted-foreground mt-1">
-            Detailed validation results for {documentInfo.name}
+            Detailed validation results for {currentDocumentInfo.name}
           </p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => setDocumentViewerOpen(true)}>
             <Eye className="w-4 h-4 mr-2" />
             View Document
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={exportToExcel}>
             <Download className="w-4 h-4 mr-2" />
             Export Report
           </Button>
@@ -169,29 +220,29 @@ const DocumentAnalysis = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div>
               <p className="text-sm text-muted-foreground">Document ID</p>
-              <p className="font-semibold text-card-foreground">{documentInfo.id}</p>
+              <p className="font-semibold text-card-foreground">{currentDocumentInfo.id}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Commodity</p>
-              <p className="font-semibold text-card-foreground">{documentInfo.commodity}</p>
+              <p className="font-semibold text-card-foreground">{currentDocumentInfo.commodity}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Overall Status</p>
               <Badge 
                 className={cn(
                   "font-medium capitalize",
-                  getStatusBg(documentInfo.overallStatus),
-                  getStatusColor(documentInfo.overallStatus)
+                  getStatusBg(currentDocumentInfo.overallStatus),
+                  getStatusColor(currentDocumentInfo.overallStatus)
                 )}
               >
-                {documentInfo.overallStatus}
+                {currentDocumentInfo.overallStatus}
               </Badge>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Confidence Score</p>
               <div className="flex items-center gap-2">
-                <Progress value={documentInfo.confidence} className="h-2 flex-1" />
-                <span className="font-semibold text-card-foreground">{documentInfo.confidence}%</span>
+                <Progress value={currentDocumentInfo.confidence} className="h-2 flex-1" />
+                <span className="font-semibold text-card-foreground">{currentDocumentInfo.confidence}%</span>
               </div>
             </div>
           </div>
@@ -343,6 +394,13 @@ const DocumentAnalysis = () => {
           </Tabs>
         </CardContent>
       </Card>
+
+      <DocumentViewer
+        isOpen={documentViewerOpen}
+        onClose={() => setDocumentViewerOpen(false)}
+        documentFile={documentInfo?.file || null}
+        documentName={currentDocumentInfo.name}
+      />
     </div>
   );
 };
